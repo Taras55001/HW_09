@@ -6,6 +6,10 @@ command_list = "'add' - додає новий контакт\n"\
     "'phone' - показує конакт за ім'ям\n"\
     "'show' - показує список конактів\n"\
     "'good', 'bye', 'close', 'exit' - вихід з бота"
+input_line = "-" * 50 + "\n"\
+    "Введіть команду \n"\
+    "(example: 'add name phone_number')\n"\
+    "Щоб відобразии список команд введіть 'help': "
 
 
 def input_error(func):
@@ -55,10 +59,34 @@ def list_contacts():
             print(f"{name}: {phone}")
 
 
+def key_to_change_data(key, params):
+    if key == 'add':
+        name, phone = params.split()
+        return add_contact(name, phone)
+
+    elif key == 'change':
+        name, new_phone = params.split()
+        return change_phone(name, new_phone)
+
+    return False
+
+
+def data_output_key(key, params):
+    if key == 'hello':
+        return print("How can I help you?")
+    elif key == 'help':
+        return print(command_list)
+    elif key == 'show':
+        return list_contacts()
+    elif key == 'phone':
+        name = params
+        return get_phone(name)
+    return False
+
+
 def main():
     while True:
-        command = input(
-            "Введіть команду \n(example: 'add name phone_number')\nЩоб відобразии список команд введіть 'help': ")
+        command = input(input_line)
         key, params = parse_command(command)
 
         if not key:
@@ -67,39 +95,18 @@ def main():
 
         key = key.lower()
 
-        if key == 'hello':
-            print("How can I help you?")
+        try:
+            data_output_key(key, params)
+            key_to_change_data(key, params)
+        except AttributeError:
+            print("Не вказані дані контакту")
+            continue
 
-        elif key == 'add':
-            if not params:
-                print("Введіть ім'я та номер телефону")
-                continue
-            name, phone = params.split()
-            add_contact(name, phone)
-
-        elif key == 'change':
-            if not params:
-                print("Введіть ім'я та новий номер телефону")
-                continue
-            name, new_phone = params.split()
-            change_phone(name, new_phone)
-
-        elif key == 'phone':
-            if not params:
-                print("Введіть ім'я контакту")
-                continue
-            name = params
-            get_phone(name)
-
-        elif key == 'show':
-            list_contacts()
-
-        elif key in ['good', 'bye', 'close', 'exit']:
+        if key in ['good', 'bye', 'close', 'exit']:
             print("Good bye!")
             break
-        elif key == 'help':
-            print(command_list)
-        else:
+
+        if data_output_key is False or key_to_change_data is False:
             print("Невідома команда")
 
 
