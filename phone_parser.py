@@ -92,7 +92,6 @@ def main():
         if not key:
             print("Неправильний формат команди")
             continue
-
         key = key.lower()
 
         try:
@@ -105,7 +104,6 @@ def main():
         if key in ['good', 'bye', 'close', 'exit']:
             print("Good bye!")
             break
-
         if data_output_key is False or key_to_change_data is False:
             print("Невідома команда")
 
